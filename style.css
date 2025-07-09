@@ -1,0 +1,118 @@
+.custom-modal .modal-dialog {
+  max-width: 90%;
+  display: block;
+  padding-left: 0px;
+}
+
+.modal-header,
+.modal-body,
+.modal-footer {
+  background-color: #87CEFA9c;
+
+}
+
+#myModal input.form-control {
+  text-align: center;
+}
+
+.list-group-item-check:checked+.list-group-item {
+  color: #fff;
+  background-color: var(--bs-primary);
+  border-color: var(--bs-primary);
+}
+
+.list-group-item-check {
+  position: absolute;
+  clip: rect(0, 0, 0, 0);
+}
+
+
+table th {
+  white-space: nowrap;
+}
+
+
+
+@media print {
+
+  * {
+    box-sizing: border-box;
+  }
+
+
+  @page {
+    size: B5 portrait;
+    margin: 0;
+  }
+
+  html,
+  body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+  }
+
+  .container-fluid {
+    height: 100vh;
+    overflow: auto;
+  }
+
+  .textbig h1 {
+    font-size: 15rem;
+    line-height: 1;
+  }
+
+  .textbig1 h1 {
+    font-size: 10rem;
+    line-height: 1;
+  }
+
+  .textbig h2 {
+    font-size: 3rem;
+    line-height: 1;
+  }
+
+  .borderframe {
+    border: 1px solid black;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: auto;
+  }
+
+  .container-fluid>div {
+    height: 100%;
+  }
+
+  .full-height {
+    height: 100%;
+  }
+
+  .row.full-height {
+    display: flex;
+  }
+}
+
+.delivery-date,
+.table tbody tr td:nth-child(21) {
+  width: 110px;
+  min-width: 110px;
+}
+
+.delivery-date,
+.table tbody tr td:nth-child(3),
+.table tbody tr td:nth-child(5) {
+  width: 120px;
+  min-width: 120px;
+}
+
+#search,
+#clear {
+  width: 150px;
+
+}
+
+.ui-autocomplete {
+  z-index: 1060;
+}

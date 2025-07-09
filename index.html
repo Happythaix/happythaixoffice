@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="author" content="ZXing for JS">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+  <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm"
+    crossorigin="anonymous"></script>
+  <title>บันทึกพัสดุ</title>
+  <link rel="icon" type="image/png"
+    href="https://lh3.googleusercontent.com/p/AF1QipMyZcT0vn1EdIrf3kJgjcCaN0CNtASNXXnpv_Xi=s680-w680-h510">
+  <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <script
+    src="https://cdn.jsdelivr.net/npm/gasparesganga-jquery-loading-overlay@2.1.7/dist/loadingoverlay.min.js"></script>
+  <link rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css">
+  <script
+    src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
+  <script
+    src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/locales/bootstrap-datepicker.th.min.js"></script>
+  <link href="style.css" rel="stylesheet" type="text/css" />
+  <script src="script.js"></script>
+
+</head>
+
+<body class="d-flex h-100 text-center">
+  <div class="container py-3">
+    <main>
+      <section class="container" id="demo-content">
+        <div class="row mb-3">
+          <h1>โปรแกรมบันทึกพัสดุ</h1>
+          <div class="row mb-3">
+            <div class="d-flex flex-column my-4 col-2">
+              <button class="btn btn-primary mb-2" onclick="handleButtonClick('addnew')">เพิ่มพัสดุใหม่</button>
+              <p>ค้นหาพัสดุในฐานข้อมูล</p>
+              <div class="d-flex">
+                <button class="btn btn-warning" id="search">ค้นหา</button>
+                <button class="btn btn-secondary ms-2" id="clear">ล้างข้อมูล</button>
+              </div>
+            </div>
+          </div>
+          <div class="col-4">
+            <div class="input-group mb-3">
+              <span class="input-group-text">เบอร์โทร</span>
+              <input type="text" class="form-control" id="searchtelephone">
+            </div>
+          </div>
+          <div class="col-4">
+            <div class="input-group mb-3">
+              <span class="input-group-text">วันที่</span>
+              <input type="text" class="form-control" id="searchdate">
+            </div>
+          </div>
+
+          <div class="col-4">
+            <div class="input-group mb-3">
+              <span class="input-group-text">เลขพัสดุ</span>
+              <input type="text" class="form-control" id="searchparcelnumber">
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <div class="row g-3 text-center justify-content-center" id="tabledata">
+        <table class="table table-striped table-hover table-responsive ">
+          <thead>
+            <tr>
+              <th>ลำดับ</th>
+              <th>เบอร์โทร</th>
+              <th>ID</th>
+              <th class="delivery-date">ชื่อ</th>
+              <th>เลขพัสดุ</th>
+              <th class="delivery-date">สินค้า</th>
+              <th>28</th>
+              <th>30</th>
+              <th>32</th>
+              <th>35</th>
+              <th>38</th>
+              <th>40</th>
+              <th>45</th>
+              <th>60</th>
+              <th>น้ำหนักรวม</th>
+              <th>เพิ่มเติม</th>
+              <th>ค่าใช้จ่าย</th>
+              <th>น้ำหนักต้นทุน</th>
+              <th>รวมยอด</th>
+              <th>สาขา</th>
+              <th class="delivery-date">วันที่จัดส่ง</th>
+              <th>พิมพ์</th>
+              <th>แก้ไข</th>
+              <th>ลบ</th>
+            </tr>
+          </thead>
+          <tbody id="table-body">
+          </tbody>
+        </table>
+      </div>
+    </main>
+  </div>
+
+  <div class="modal custom-modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">เพิ่มข้อมูลใหม่</h5>
+        </div>
+        <div class="modal-body">
+          <form class="row g-3 text-center">
+            <input type="hidden" id="hiddenDateRecord">
+            <input type="hidden" id="uiddata">
+            <div class="col-md-3">
+              <label for="tel" class="form-label">เบอร์โทร</label>
+              <input type="text" class="form-control" id="tel">
+            </div>
+
+            <div class="col-md-3">
+              <label for="username" class="form-label">ชื่อ</label>
+              <input type="text" class="form-control" id="username">
+            </div>
+
+            <div class="col-md-3">
+              <label for="pass1" class="form-label">รหัส</label>
+              <input type="text" class="form-control" id="pass1">
+            </div>
+
+            <div class="col-md-3">
+              <label for="pass2" class="form-label">รหัสล่าสุด</label>
+              <input type="text" class="form-control" id="pass2" readonly>
+            </div>
+
+            <div class="col-md-6">
+              <label for="parcelNo" class="form-label">เลขพัสดุ</label>
+              <input type="text" class="form-control" id="parcelNo">
+            </div>
+
+            <div class="col-md-6">
+              <label for="parcelType" class="form-label">ประเภทสินค้า</label>
+              <input type="text" class="form-control" id="parcelType">
+            </div>
+            <div class="col-md-6">
+              <label for="weight1" class="form-label">28 HK - ขายส่ง</label>
+              <input type="text" class="form-control" id="weight1">
+            </div>
+
+            <div class="col-md-6">
+              <label for="weight2" class="form-label">35 HK - ของกิน/ของใช้ทั่วไป</label>
+              <input type="text" class="form-control" id="weight2">
+            </div>
+
+            <div class="col-md-6">
+              <label for="weight3" class="form-label">30 HK - ขายส่ง</label>
+              <input type="text" class="form-control" id="weight3">
+            </div>
+
+            <div class="col-md-6">
+              <label for="weight4" class="form-label">38 HK</label>
+              <input type="text" class="form-control" id="weight4">
+            </div>
+
+            <div class="col-md-6">
+              <label for="weight5" class="form-label">45 HK - เครื่องสำอาง</label>
+              <input type="text" class="form-control" id="weight5">
+            </div>
+
+            <div class="col-md-6">
+              <label for="weight6" class="form-label">32 HK - ขายส่ง(แช่ฟรีซ)</label>
+              <input type="text" class="form-control" id="weight6">
+            </div>
+
+            <div class="col-md-6">
+              <label for="weight7" class="form-label">60 HK - พระ</label>
+              <input type="text" class="form-control" id="weight7">
+            </div>
+
+            <div class="col-md-6">
+              <label for="weight8" class="form-label">40 HK - ขายส่ง</label>
+              <input type="text" class="form-control" id="weight8">
+            </div>
+
+            <div class="col-md-6">
+              <label for="allweight" class="form-label">น้ำหนักรวม</label>
+              <input type="text" class="form-control" id="allweight">
+            </div>
+
+            <div class="col-md-6">
+              <label for="moneyallweight" class="form-label">เงินรวมค่า น้ำหนัก</label>
+              <input type="text" class="form-control" id="moneyallweight">
+            </div>
+
+            <div class="d-flex flex-column flex-md-column p-4 gap-4 py-md-5 justify-content-center">
+              <label for="Typemoney" class="form-label align-self-center me-3">ประเภทการจ่ายอื่นๆ</label>
+
+              <div class="list-group list-group-checkable d-flex flex-row gap-2 border-0 flex-fill">
+                <input class="list-group-item-check pe-none modal-checkbox" type="checkbox" name="checkbox"
+                  id="checkbox1">
+                <label class="list-group-item flex-grow-1 rounded-3 py-3" for="checkbox1">
+                  กล่องโฟม/ลังกระดาษ
+                </label>
+
+                <input class="list-group-item-check pe-none modal-checkbox" type="checkbox" name="checkbox"
+                  id="checkbox2">
+                <label class="list-group-item flex-grow-1 rounded-3 py-3" for="checkbox2">
+                  เจลความเย็น
+                </label>
+
+                <input class="list-group-item-check pe-none modal-checkbox" type="checkbox" name="checkbox"
+                  id="checkbox3">
+                <label class="list-group-item flex-grow-1 rounded-3 py-3" for="checkbox3">
+                  ค่า Grab/Taxi
+                </label>
+
+                <input class="list-group-item-check pe-none modal-checkbox" type="checkbox" name="checkbox"
+                  id="checkbox4">
+                <label class="list-group-item flex-grow-1 rounded-3 py-3" for="checkbox4">
+                  ค่าสินค้าเก็บปลายทาง
+                </label>
+              </div>
+            </div>
+
+            <div class="col-md-6">
+              <label for="expenses" class="form-label">ค่าใช้จ่ายรวมเป็นเงิน(บาท)</label>
+              <input type="text" class="form-control" id="expenses">
+            </div>
+
+            <div class="col-md-6">
+              <label for="TotalHKD" class="form-label">เงินรวม HKD</label>
+              <input type="text" class="form-control" id="TotalHKD">
+            </div>
+
+            <div class="d-flex flex-column flex-md-column p-4 gap-4 py-md-5 justify-content-center">
+              <label for="branch" class="form-label align-self-center me-3">เลือกสาขาจัดส่ง</label>
+
+              <div class="list-group list-group-checkable d-flex flex-row gap-2 border-0 flex-fill">
+                <input class="list-group-item-check pe-none" type="radio" name="radio" value="สาขา1" id="radio1"
+                  checked>
+                <label class="list-group-item flex-grow-1 rounded-3 py-3" for="radio1">
+                  สาขา1
+                </label>
+
+                <input class="list-group-item-check pe-none" type="radio" name="radio" value="สาขา5" id="radio2">
+                <label class="list-group-item flex-grow-1 rounded-3 py-3" for="radio2">
+                  สาขา5
+                </label>
+
+                <input class="list-group-item-check pe-none" type="radio" name="radio" value="สาขา9" id="radio3">
+                <label class="list-group-item flex-grow-1 rounded-3 py-3" for="radio3">
+                  สาขา9
+                </label>
+              </div>
+            </div>
+
+            <div class="col-md-4">
+              <label for="deliveryround" class="form-label">รอบจัดส่ง</label>
+              <input type="text" class="form-control" id="deliveryround">
+            </div>
+
+            <div class="col-md-8">
+              <label for="note2" class="form-label">หมายเหตุ</label>
+              <input type="text" class="form-control" id="note2">
+            </div>
+
+            <div class="d-flex flex-column flex-md-column p-4 gap-4 py-md-5 justify-content-center">
+              <label for="money" class="form-label align-self-center me-3">การชำระเงิน</label>
+
+              <div class="list-group list-group-checkable d-flex flex-row gap-2 border-0 flex-fill">
+                <input class="list-group-item-check pe-none" type="radio" name="radio2" id="radio4" value="รอชำระ">
+                <label class="list-group-item flex-grow-1 rounded-3 py-3" for="radio4">รอชำระ</label>
+
+                <input class="list-group-item-check pe-none" type="radio" name="radio2" id="radio5"
+                  value="ชำระเงินแล้ว (ที่ไทย)">
+                <label class="list-group-item flex-grow-1 rounded-3 py-3" for="radio5">ชำระเงินแล้ว (ที่ไทย)</label>
+
+                <input class="list-group-item-check pe-none" type="radio" name="radio2" id="radio6"
+                  value="ชำระเงินแล้ว (ที่ HK)">
+                <label class="list-group-item flex-grow-1 rounded-3 py-3" for="radio6">ชำระเงินแล้ว (ที่ HK)</label>
+
+              </div>
+            </div>
+            <div class="col-md-4">
+              <label for="Cash" class="form-label">Cash</label>
+              <input type="text" class="form-control" id="Cash">
+            </div>
+            <div class="col-md-4">
+              <label for="Transfer" class="form-label">Transfer</label>
+              <input type="text" class="form-control" id="Transfer">
+            </div>
+            <div class="col-md-4">
+              <label for="note" class="form-label">Note</label>
+              <input type="text" class="form-control" id="note">
+            </div>
+
+            <div class="col-md-6">
+              <label for="inputAddress2" class="form-label">Delivery Status</label>
+              <select class="form-select" id="deliveryStatusSelect" aria-label="Default select example">
+                <option value="อยู่ระหว่างดำเนินการ">อยู่ระหว่างดำเนินการ</option>
+                <option value="พัสดุถูกรับแล้ว">พัสดุถูกรับแล้ว</option>
+              </select>
+            </div>
+
+            <div class="col-md-6">
+              <label for=" productreceivedday" class="form-label">วันรับสินค้า</label>
+              <input type="text" class="form-control" id="productreceivedday">
+            </div>
+          </form>
+        </div>
+
+        <div class="modal-footer">
+          <div class="d-grid gap-2 col-3 mx-auto">
+            <button type="button" class="btn btn-primary" id="save">บันทึก</button>
+          </div>
+          <div class="d-grid gap-2 col-3 mx-auto">
+            <button type="button" class="btn btn-warning" id="printpdf">พิมพ์</button>
+          </div>
+          <div class="d-grid gap-2 col-3 mx-auto">
+            <button type="button" class="btn btn-secondary" id="close">ยกเลิก</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+
+
+</body>
+
+</html>
